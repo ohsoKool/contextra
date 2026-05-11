@@ -1,5 +1,5 @@
 import { loadDocuments } from "../loaders/loadDocuments.js";
-import { chunkDocuments } from "./chunkDocuments.js";
+import { chunkDocuments } from "../ingestion/chunkDocuments.js";
 import { generateEmbedding } from "../embeddings/generateEmbedding.js";
 import { getCollection } from "../vectorstore/chromaClient.js";
 

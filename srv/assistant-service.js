@@ -1,13 +1,43 @@
 import cds from "@sap/cds";
 
-import { askQuestion } from "../ai/rag/askQuestion.js";
+import { askQuestion } from "../ai/orchestration/askQuestion.js";
+
+import log from "../utils/logger.js";
+
+/*
+  CAP service implementation for AI assistant queries.
+
+  FLOW:
+  UI5
+  → CAP Action
+  → RAG orchestration
+  → AI response
+*/
 
 export default cds.service.impl(function () {
   this.on("ask", async (req) => {
-    const { question } = req.data;
+    const start = Date.now();
 
-    const response = await askQuestion(question);
+    try {
+      const { question } = req.data;
 
-    return response;
+      if (!question || typeof question !== "string") {
+        req.reject(400, "A valid question is required");
+      }
+
+      log.info("CAP", "Received assistant question");
+
+      const response = await askQuestion(question);
+
+      const duration = Date.now() - start;
+
+      log.success("CAP", `Assistant request completed in ${duration}ms`);
+
+      return response;
+    } catch (error) {
+      log.error("CAP", "Assistant service request failed", error);
+
+      req.reject(500, "Failed to process assistant request");
+    }
   });
 });
