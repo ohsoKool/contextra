@@ -4,12 +4,10 @@ import { chunkDocuments } from "./chunkDocuments.js";
 
 import { generateEmbedding } from "../embeddings/generateEmbedding.js";
 
-import { getCollection } from "../vectorstore/chromaClient.js";
+import { addDocument } from "../vectorstore/hanaStore.js";
 
 export async function storePdfDocuments(fileName) {
   const pdfDocs = await loadPdf(fileName);
-
-  const collection = await getCollection();
 
   let counter = 0;
 
@@ -19,19 +17,14 @@ export async function storePdfDocuments(fileName) {
     for (const chunk of chunks) {
       const embedding = await generateEmbedding(chunk.pageContent);
 
-      await collection.add({
-        ids: [`pdf-chunk-${counter}`],
+      await addDocument({
+        id: `pdf-chunk-${counter}`,
 
-        embeddings: [embedding],
+        content: chunk.pageContent,
 
-        documents: [chunk.pageContent],
+        source: doc.metadata.source,
 
-        metadatas: [
-          {
-            source: doc.metadata.source,
-            page: doc.metadata.loc?.pageNumber,
-          },
-        ],
+        embedding,
       });
 
       console.log(`Stored pdf-chunk-${counter}`);

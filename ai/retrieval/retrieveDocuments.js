@@ -1,12 +1,12 @@
 import { generateEmbedding } from "../embeddings/generateEmbedding.js";
 
-import { getCollection } from "../vectorstore/chromaClient.js";
+import { similaritySearch } from "../vectorstore/hanaStore.js";
 
 import log from "../../utils/logger.js";
 
 /*
   Retrieve semantically relevant document chunks
-  from the vector database using similarity search.
+  from SAP HANA Vector Engine using similarity search.
 */
 
 export async function retrieveDocuments(question) {
@@ -21,19 +21,19 @@ export async function retrieveDocuments(question) {
 
     const embedding = await generateEmbedding(question);
 
-    const collection = await getCollection();
-
     log.info("RETRIEVAL", "Performing semantic similarity search");
 
-    const results = await collection.query({
-      queryEmbeddings: [embedding],
-
-      nResults: 5,
+    const results = await similaritySearch({
+      embedding,
+      limit: 5,
     });
 
-    const documents = results.documents?.[0] || [];
+    const documents = results.map((row) => row.CONTENT);
 
-    const metadatas = results.metadatas?.[0] || [];
+    const metadatas = results.map((row) => ({
+      source: row.SOURCE,
+      score: row.SCORE,
+    }));
 
     const duration = Date.now() - start;
 

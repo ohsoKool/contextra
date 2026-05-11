@@ -6,13 +6,13 @@ import { chunkDocuments } from "./chunkDocuments.js";
 
 import { generateEmbedding } from "../embeddings/generateEmbedding.js";
 
-import { getCollection } from "../vectorstore/chromaClient.js";
+import { addDocument } from "../vectorstore/hanaStore.js";
 
 import log from "../../utils/logger.js";
 
 /*
   Process uploaded PDF documents and store
-  vector embeddings inside the vector database.
+  vector embeddings inside SAP HANA Vector Engine.
 
   FLOW:
   PDF
@@ -38,8 +38,6 @@ export async function processPdfUpload(filePath) {
 
     log.success("INGESTION", `Loaded ${docs.length} PDF pages`);
 
-    const collection = await getCollection();
-
     let counter = Date.now();
 
     for (const doc of docs) {
@@ -50,20 +48,14 @@ export async function processPdfUpload(filePath) {
       for (const chunk of chunks) {
         const embedding = await generateEmbedding(chunk.pageContent);
 
-        await collection.add({
-          ids: [`upload-${counter}`],
+        await addDocument({
+          id: `upload-${counter}`,
 
-          embeddings: [embedding],
+          content: chunk.pageContent,
 
-          documents: [chunk.pageContent],
+          source: path.basename(filePath),
 
-          metadatas: [
-            {
-              source: path.basename(filePath),
-
-              page: doc.metadata.loc?.pageNumber,
-            },
-          ],
+          embedding,
         });
 
         log.success("VECTORSTORE", `Stored chunk upload-${counter}`);
