@@ -1,27 +1,25 @@
 # Contextra AI Assistant
 
-Contextra AI Assistant is an enterprise-style knowledge assistant built using SAP CAP, SAPUI5, vector search, and Retrieval-Augmented Generation (RAG).
+Contextra AI Assistant is an enterprise-style knowledge intelligence platform built using SAP CAP, SAPUI5, SAP HANA Cloud Vector Engine, and Retrieval-Augmented Generation (RAG).
 
-The project focuses on building a clean and understandable AI-powered document assistant while exploring enterprise application architecture on SAP BTP.
+The project focuses on building a scalable and modular AI-powered document assistant while exploring enterprise application architecture patterns on SAP BTP.
 
-Users can upload PDF documents, store semantic embeddings, perform contextual retrieval, and ask grounded conversational questions based on uploaded content.
-
----
+Users can upload PDF documents, generate semantic embeddings, perform contextual retrieval, and interact with grounded conversational AI responses based on enterprise knowledge sources.
 
 # Features
 
 - PDF upload and ingestion
 - Semantic document chunking
-- Vector embedding generation
-- ChromaDB vector storage
+- Transformer-based embedding generation
+- SAP HANA Cloud Vector Engine integration
+- Vector similarity search
 - Retrieval-Augmented Generation (RAG)
 - Conversational AI responses
 - SAP CAP backend services
 - SAPUI5 frontend
 - Structured logging and observability
 - Modular enterprise-style architecture
-
----
+- Contextual semantic retrieval workflows
 
 # Tech Stack
 
@@ -29,7 +27,7 @@ Users can upload PDF documents, store semantic embeddings, perform contextual re
 
 - Node.js
 - SAP CAP
-- Express
+- Express.js
 - Groq API
 - Xenova Transformers
 
@@ -41,12 +39,19 @@ Users can upload PDF documents, store semantic embeddings, perform contextual re
 
 ## AI / RAG
 
-- ChromaDB
+- SAP HANA Cloud Vector Engine
 - Semantic Retrieval
 - Vector Embeddings
 - Recursive Text Chunking
+- Retrieval-Augmented Generation (RAG)
 
----
+## SAP BTP Services
+
+- Cloud Foundry
+- SAP HANA Cloud
+- XSUAA
+- SAP Identity Authentication Service (IAS)
+- SAP Build Work Zone
 
 # Project Structure
 
@@ -77,8 +82,6 @@ contextra/
 └── utils/
 ```
 
----
-
 # Architecture Overview
 
 ## Document Ingestion Flow
@@ -86,9 +89,10 @@ contextra/
 ```text
 PDF Upload
 → Text Extraction
-→ Document Chunking
+→ Recursive Chunking
 → Embedding Generation
-→ Vector Storage
+→ SAP HANA Cloud Vector Storage
+→ Semantic Indexing
 ```
 
 ## Question Answering Flow
@@ -96,13 +100,12 @@ PDF Upload
 ```text
 User Question
 → Query Embedding
-→ Semantic Retrieval
+→ Vector Similarity Search
+→ Context Retrieval
 → Prompt Construction
 → LLM Response Generation
-→ Grounded Answer
+→ Grounded AI Response
 ```
-
----
 
 # Local Setup
 
@@ -118,8 +121,6 @@ If peer dependency issues occur:
 npm install --legacy-peer-deps
 ```
 
----
-
 ## 2. Configure Environment Variables
 
 Create a `.env` file in the project root:
@@ -127,31 +128,19 @@ Create a `.env` file in the project root:
 ```env
 GROQ_API_KEY=your_groq_api_key
 
-CHROMA_HOST=localhost
-CHROMA_PORT=8000
+HANA_HOST=your_hana_host
+HANA_PORT=443
+HANA_USER=your_hana_user
+HANA_PASSWORD=your_hana_password
 ```
 
----
-
-## 3. Start ChromaDB
-
-Run ChromaDB using Docker:
-
-```bash
-docker run -p 8000:8000 chromadb/chroma
-```
-
----
-
-## 4. Start CAP Backend
+## 3. Start SAP CAP Backend
 
 ```bash
 cds watch
 ```
 
----
-
-## 5. Start SAPUI5 Frontend
+## 4. Start SAPUI5 Frontend
 
 ```bash
 cd app/ui5app
@@ -159,40 +148,63 @@ npm install
 npm start
 ```
 
----
-
 # Current Focus Areas
 
 This project is currently focused on:
 
-- enterprise AI architecture learning
+- enterprise AI architecture
 - SAP CAP development
 - Retrieval-Augmented Generation (RAG)
 - SAPUI5 frontend architecture
+- semantic retrieval workflows
 - vector search concepts
-- SAP BTP readiness
+- SAP BTP enterprise integration
+- contextual AI orchestration
 
----
+# Enterprise Architecture Goals
+
+The project is being designed around:
+
+- scalable service-oriented architecture
+- modular AI orchestration
+- enterprise security patterns
+- contextual retrieval pipelines
+- extensible CAP-based services
+- maintainable AI workflow integration
 
 # Planned Improvements
 
-- SAP HANA Cloud Vector Engine integration
-- SAP BTP deployment
-- XSUAA / IAS authentication
-- Work Zone integration
-- persistent conversation memory
-- improved UI responsiveness
-- multilingual i18n support
+- Advanced SAP HANA Cloud Vector Engine optimization
+- Multi-document contextual retrieval
+- Persistent conversational memory
+- SAP Joule Skills integration
+- Agent-driven enterprise workflows
+- Improved prompt orchestration strategies
+- Enhanced UI responsiveness
+- Multilingual i18n support
+- Expanded observability and monitoring
+- Kyma-based deployment exploration
 
----
+# SAP BTP Deployment Scope
+
+The platform is designed for enterprise deployment using:
+
+- SAP BTP Cloud Foundry
+- SAP HANA Cloud
+- XSUAA authentication
+- SAP Identity Authentication Service (IAS)
+- SAP Build Work Zone integration
+- Enterprise CAP service orchestration
 
 # Notes
 
-This project is intentionally being built with a strong focus on:
+This project is intentionally being developed with a strong focus on:
 
-- architecture clarity
+- enterprise architecture clarity
 - maintainability
 - modularity
-- learning enterprise AI concepts deeply
+- scalable AI workflows
+- semantic retrieval systems
+- understanding enterprise AI application design deeply
 
-The goal is not only to build an AI assistant, but also to understand how enterprise AI applications are structured and evolved over time.
+The goal is not only to build an AI assistant, but also to understand how enterprise AI systems are architected, secured, deployed, and evolved within modern SAP BTP environments.
