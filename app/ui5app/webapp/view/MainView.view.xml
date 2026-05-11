@@ -1,0 +1,68 @@
+<mvc:View
+    controllerName="ui5app.controller.MainView"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:unified="sap.ui.unified"
+    displayBlock="true">
+
+    <Page
+        id="page"
+        showHeader="false">
+
+       <content>
+
+    <VBox id="_IDGenVBox"
+    width="100%"
+    alignItems="Center"
+    justifyContent="Center"
+    class="sapUiMediumMarginTop">
+
+    <Panel id="_IDGenPanel"
+        width="60%"
+        headerText="Contextra AI Assistant"
+        class="sapUiResponsiveMargin">
+
+        <VBox id="_IDGenVBox1" class="sapUiMediumMargin">
+
+            <unified:FileUploader
+                id="pdfUploader"
+                name="pdf"
+                uploadUrl="http://localhost:4004/upload"
+                fileType="pdf"
+                uploadOnChange="true"
+                buttonText="Upload PDF"
+                uploadComplete="onUploadComplete"
+            />
+
+            <Input
+                id="questionInput"
+                placeholder="Ask a question..."
+                class="sapUiMediumMarginTop"
+            />
+
+            <Button id="_IDGenButton1"
+                text="Ask"
+                type="Emphasized"
+                press="onAsk"
+                class="sapUiSmallMarginTop"
+            />
+
+            <TextArea
+            id="responseArea"
+            editable="false"
+            rows="15"
+            width="100%"
+            growing="true"
+            />
+
+        </VBox>
+
+    </Panel>
+
+</VBox>
+
+</content>
+
+    </Page>
+
+</mvc:View>

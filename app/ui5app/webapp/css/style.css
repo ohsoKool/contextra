@@ -1,0 +1,23 @@
+.appContainer {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.chatCard {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.askButton {
+  width: 120px;
+}
+
+.responseArea textarea {
+  background: #f9fafb;
+}
+
+.sapMPage {
+  background: #f5f6f7;
+}
