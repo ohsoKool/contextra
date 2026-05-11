@@ -1,46 +1,68 @@
 sap.ui.define(
-  ["sap/ui/core/mvc/Controller", "sap/m/MessageToast"],
-  function (Controller, MessageToast) {
+  [
+    "sap/ui/core/mvc/Controller",
+    "sap/m/MessageToast",
+    "ui5app/services/ChatService",
+  ],
+
+  function (Controller, MessageToast, ChatService) {
     "use strict";
 
     return Controller.extend(
       "ui5app.controller.MainView",
 
       {
+        /*
+          Helper function for retrieving i18n texts.
+        */
+
+        getText: function (key) {
+          return this.getView()
+            .getModel("i18n")
+            .getResourceBundle()
+            .getText(key);
+        },
+
+        /*
+          Handle AI question submission flow.
+        */
+
         onAsk: async function () {
-          const question = this.byId("questionInput").getValue();
+          const oChatModel = this.getView().getModel("chat");
 
-          const responseArea = this.byId("responseArea");
+          const question = oChatModel.getProperty("/question");
 
-          responseArea.setValue("Thinking...");
+          if (!question) {
+            MessageToast.show(this.getText("questionRequired"));
+
+            return;
+          }
+
+          // Set loading state
+          oChatModel.setProperty("/loading", true);
+
+          // Show temporary loading message
+          oChatModel.setProperty("/response", this.getText("thinkingMessage"));
 
           try {
-            const response = await fetch(
-              // eslint-disable-next-line fiori-custom/sap-no-hardcoded-url
-              "/odata/v4/assistant/ask",
-              {
-                method: "POST",
+            const data = await ChatService.askQuestion(question);
 
-                headers: {
-                  "Content-Type": "application/json",
-                },
-
-                body: JSON.stringify({
-                  question,
-                }),
-              },
-            );
-
-            const data = await response.json();
-
-            responseArea.setValue(data.answer);
+            oChatModel.setProperty("/response", data.answer);
           } catch (error) {
-            responseArea.setValue("Error connecting to backend");
+            oChatModel.setProperty("/response", this.getText("backendError"));
+
+            MessageToast.show(error.message);
+          } finally {
+            oChatModel.setProperty("/loading", false);
           }
         },
 
+        /*
+          Handle successful PDF upload.
+        */
+
         onUploadComplete: function () {
-          MessageToast.show("PDF uploaded successfully");
+          MessageToast.show(this.getText("uploadSuccess"));
         },
       },
     );

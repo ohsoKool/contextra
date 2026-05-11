@@ -19,13 +19,13 @@ export async function chunkDocuments(text) {
     log.info("CHUNKING", "Starting document chunking");
 
     const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1000,
+      chunkSize: 500,
 
       /*
         Overlap helps preserve semantic continuity
         across chunk boundaries.
       */
-      chunkOverlap: 200,
+      chunkOverlap: 100,
     });
 
     const chunks = await splitter.createDocuments([text]);

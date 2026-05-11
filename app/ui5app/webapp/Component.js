@@ -4,6 +4,7 @@
 
 sap.ui.define(
   ["sap/ui/core/UIComponent", "sap/ui/Device", "ui5app/model/models"],
+
   function (UIComponent, Device, models) {
     "use strict";
 
@@ -13,25 +14,36 @@ sap.ui.define(
       },
 
       /**
-       * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
-       * @public
-       * @override
+       * Initialize UI5 application component.
        */
+
       init: function () {
-        // call the base component's init function
+        // Call base component initialization
         UIComponent.prototype.init.apply(this, arguments);
+
+        // Load custom stylesheet
         sap.ui.require(
           ["sap/ui/dom/includeStylesheet"],
+
           function (includeStylesheet) {
             includeStylesheet("css/style.css");
           },
         );
 
-        // enable routing
+        // Enable application routing
         this.getRouter().initialize();
 
-        // set the device model
+        /*
+          Device model used for responsive behavior.
+        */
+
         this.setModel(models.createDeviceModel(), "device");
+
+        /*
+          Chat model used for conversational UI state.
+        */
+
+        this.setModel(models.createChatModel(), "chat");
       },
     });
   },
