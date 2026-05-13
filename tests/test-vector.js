@@ -1,14 +1,6 @@
-import { pipeline } from "@xenova/transformers";
+import { generateEmbedding } from "../srv/ai/embeddings/generateEmbedding.js";
 
-const extractor = await pipeline(
-  "feature-extraction",
-  "Xenova/all-MiniLM-L6-v2",
-);
+const embedding = await generateEmbedding("SAP HANA Vector Engine is powerful");
 
-const output = await extractor("SAP HANA Vector Engine is powerful", {
-  pooling: "mean",
-  normalize: true,
-});
-
-console.log(output.data);
-console.log(output.data.length);
+console.log(embedding);
+console.log(embedding.length);

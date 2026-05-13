@@ -1,0 +1,10 @@
+node_modules
+.git
+.env
+tests
+uploads
+temp
+coverage
+app/ui5app/node_modules
+app/ui5app/dist
+mta_archives

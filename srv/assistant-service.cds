@@ -1,5 +1,8 @@
-service AssistantService {
+service AssistantService @(requires: 'any') {
 
-    action ask(question : String) returns String;
+    action ask(question : String) returns {
+        answer : String;
+        sources : LargeString;
+    };
 
 }

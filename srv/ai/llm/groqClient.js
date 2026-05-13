@@ -20,11 +20,25 @@ dotenv.config();
   - orchestration
 */
 
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
+let groq;
 
-log.success("LLM", "Groq client initialized");
+function getGroqClient() {
+  const apiKey = process.env.GROQ_API_KEY;
+
+  if (!apiKey) {
+    return null;
+  }
+
+  if (!groq) {
+    groq = new Groq({
+      apiKey,
+    });
+
+    log.success("LLM", "Groq client initialized");
+  }
+
+  return groq;
+}
 
 /*
   Generate grounded AI response from the final RAG prompt.
@@ -38,9 +52,17 @@ export async function generateLLMResponse(prompt) {
       throw new Error("Invalid prompt provided to LLM");
     }
 
+    const groqClient = getGroqClient();
+
+    if (!groqClient) {
+      log.warn("LLM", "GROQ_API_KEY is missing; returning fallback response");
+
+      return "The LLM is not configured in this deployment. Please set GROQ_API_KEY to enable answer generation.";
+    }
+
     log.info("LLM", "Sending prompt to Groq");
 
-    const completion = await groq.chat.completions.create({
+    const completion = await groqClient.chat.completions.create({
       messages: [
         {
           role: "user",

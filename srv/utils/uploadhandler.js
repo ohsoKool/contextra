@@ -2,17 +2,36 @@ import multer from "multer";
 
 import path from "path";
 
+import fs from "fs";
+
 import log from "./logger.js";
 
 /*
-  Configure multer storage for uploaded PDFs.
+  Determine upload directory based on environment.
+
+  Cloud Foundry:
+  -> use /tmp/uploads
+
+  Local development:
+  -> use uploads/
 */
+
+const uploadDirectory =
+  process.env.NODE_ENV === "production" ? "/tmp/uploads" : "uploads";
+
+/*
+  Ensure upload directory exists.
+*/
+
+if (!fs.existsSync(uploadDirectory)) {
+  fs.mkdirSync(uploadDirectory, { recursive: true });
+}
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    log.info("UPLOAD", "Saving uploaded PDF to uploads folder");
+    log.info("UPLOAD", `Saving uploaded PDF to ${uploadDirectory}`);
 
-    cb(null, "uploads/");
+    cb(null, uploadDirectory);
   },
 
   filename: function (req, file, cb) {

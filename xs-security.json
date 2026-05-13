@@ -1,0 +1,10 @@
+{
+  "xsappname": "contextra",
+  "tenant-mode": "dedicated",
+
+  "scopes": [],
+
+  "attributes": [],
+
+  "role-templates": []
+}

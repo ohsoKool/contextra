@@ -1,61 +1,220 @@
 _schema-version: 3.3.0
+
 ID: contextra
 version: 1.0.0
-description: "A simple CAP project."
+description: "Contextra AI Assistant"
+
 parameters:
+  deploy_mode: html5-repo
   enable-parallel-deployments: true
+
 build-parameters:
   before-all:
     - builder: custom
       commands:
-        - npm ci
+        - npm ci --legacy-peer-deps
         - npx cds build --production
+
 modules:
+  # =====================================================
+  # CAP SERVICE
+  # =====================================================
   - name: contextra-srv
     type: nodejs
     path: gen/srv
+
     parameters:
-      instances: 1
       buildpack: nodejs_buildpack
+      instances: 1
+      memory: 512M
+      disk-quota: 512M
+
     build-parameters:
-      builder: npm-ci
+      builder: custom
+
+      ignore:
+        - node_modules/
+
+      commands:
+        - npm install --production --legacy-peer-deps
+
     provides:
-      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+      - name: srv-api
         properties:
           srv-url: ${default-url}
+
     requires:
       - name: contextra-db
+      - name: contextra-xsuaa
+      - name: contextra-destination-service
 
+  # =====================================================
+  # HANA DEPLOYER
+  # =====================================================
   - name: contextra-db-deployer
     type: hdb
     path: gen/db
+
     parameters:
       buildpack: nodejs_buildpack
+      memory: 256M
+      disk-quota: 256M
+
     requires:
       - name: contextra-db
-  - name: contextra
-    type: approuter.nodejs
-    path: app/router
+
+  # =====================================================
+  # UI5 APPLICATION
+  # =====================================================
+  - name: contextra-ui
+    type: html5
+    path: app/ui5app
+
     parameters:
-      keep-existing-routes: true
-      disk-quota: 256M
-      memory: 256M
+      sap.cloud.service: contextra
+
+    build-parameters:
+      builder: custom
+
+      ignore:
+        - node_modules/
+
+      commands:
+        - npm install
+        - npm run build:cf
+
+      build-result: dist
+
+      supported-platforms: []
+
+  # =====================================================
+  # HTML5 APP CONTENT DEPLOYER
+  # =====================================================
+  - name: contextra-app-content
+    type: com.sap.application.content
+    path: .
+
     requires:
+      - name: contextra-repo-host
+        parameters:
+          content-target: true
+
+    build-parameters:
+      build-result: resources
+
+      requires:
+        - name: contextra-ui
+          artifacts:
+            - contextra-ui.zip
+          target-path: resources/
+
+  # =====================================================
+  # DESTINATION CONTENT
+  # =====================================================
+  - name: contextra-destination-content
+    type: com.sap.application.content
+
+    requires:
+      - name: contextra-destination-service
+        parameters:
+          content-target: true
+
+      - name: contextra-repo-host
+        parameters:
+          service-key:
+            name: contextra-repo-host-key
+
+      - name: contextra-xsuaa
+        parameters:
+          service-key:
+            name: contextra-xsuaa-key
+
       - name: srv-api
-        group: destinations
-        properties:
-          name: srv-api # must be used in xs-app.json as well
-          url: ~{srv-url}
-          forwardAuthToken: true
-    provides:
-      - name: app-api
-        properties:
-          app-protocol: ${protocol}
-          app-uri: ${default-uri}
+
+    parameters:
+      content:
+        instance:
+          existing_destinations_policy: update
+
+          destinations:
+            - Name: contextra_html_repo_host
+              ServiceInstanceName: contextra-repo-host
+              ServiceKeyName: contextra-repo-host-key
+              sap.cloud.service: contextra
+
+            - Name: contextra_uaa
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: contextra-xsuaa
+              ServiceKeyName: contextra-xsuaa-key
+              sap.cloud.service: contextra
+
+            - Name: srv-api
+              URL: ~{srv-api/srv-url}
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: contextra-xsuaa
+              ServiceKeyName: contextra-xsuaa-key
+              HTML5.DynamicDestination: true
+
+    build-parameters:
+      no-source: true
 
 resources:
+  # =====================================================
+  # HANA HDI CONTAINER
+  # =====================================================
   - name: contextra-db
     type: com.sap.xs.hdi-container
+
     parameters:
       service: hana
       service-plan: hdi-shared
+
+  # =====================================================
+  # XSUAA
+  # =====================================================
+  - name: contextra-xsuaa
+    type: org.cloudfoundry.managed-service
+
+    parameters:
+      service: xsuaa
+      service-plan: application
+      service-name: contextra-xsuaa
+      path: xs-security.json
+
+  # =====================================================
+  # HTML5 REPO HOST
+  # =====================================================
+  - name: contextra-repo-host
+    type: org.cloudfoundry.managed-service
+
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+      service-name: contextra-repo-host
+
+  # =====================================================
+  # DESTINATION SERVICE
+  # =====================================================
+  - name: contextra-destination-service
+    type: org.cloudfoundry.managed-service
+
+    parameters:
+      service: destination
+      service-plan: lite
+      service-name: contextra-destination-service
+
+      config:
+        HTML5Runtime_enabled: true
+
+        init_data:
+          instance:
+            existing_destinations_policy: update
+
+            destinations:
+              - Name: ui5
+                URL: https://ui5.sap.com
+                Type: HTTP
+                ProxyType: Internet
+                Authentication: NoAuthentication
+
+        version: 1.0.0

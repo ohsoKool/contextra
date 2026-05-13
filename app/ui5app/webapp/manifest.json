@@ -1,22 +1,47 @@
 {
   "_version": "1.60.0",
+
   "sap.app": {
     "id": "ui5app",
     "type": "application",
     "i18n": "i18n/i18n.properties",
+
     "applicationVersion": {
       "version": "0.0.1"
     },
+
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
     "resources": "resources.json",
+
     "sourceTemplate": {
       "id": "@sap-ux/fiori-freestyle-writer:basic",
       "version": "0.21.10"
+    },
+
+    "crossNavigation": {
+      "inbounds": {
+        "contextra-display": {
+          "semanticObject": "contextra",
+          "action": "display",
+          "title": "Contextra AI Assistant",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
     }
   },
+
+  "sap.cloud": {
+    "public": true,
+    "service": "contextra"
+  },
+
   "sap.ui": {
     "technology": "UI5",
+
     "icons": {
       "icon": "",
       "favIcon": "",
@@ -25,33 +50,41 @@
       "tablet": "",
       "tablet@2": ""
     },
+
     "deviceTypes": {
       "desktop": true,
       "tablet": true,
       "phone": true
     }
   },
+
   "sap.ui5": {
     "flexEnabled": true,
+
     "dependencies": {
       "minUI5Version": "1.136.1",
+
       "libs": {
         "sap.m": {},
         "sap.ui.core": {}
       }
     },
+
     "contentDensities": {
       "compact": true,
       "cozy": true
     },
+
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
+
         "settings": {
           "bundleName": "ui5app.i18n.i18n"
         }
       }
     },
+
     "resources": {
       "css": [
         {
@@ -59,6 +92,7 @@
         }
       ]
     },
+
     "routing": {
       "config": {
         "routerClass": "sap.m.routing.Router",
@@ -69,6 +103,7 @@
         "controlId": "app",
         "clearControlAggregation": false
       },
+
       "routes": [
         {
           "name": "RouteMainView",
@@ -76,6 +111,7 @@
           "target": ["TargetMainView"]
         }
       ],
+
       "targets": {
         "TargetMainView": {
           "viewType": "XML",
@@ -86,6 +122,7 @@
         }
       }
     },
+
     "rootView": {
       "viewName": "ui5app.view.App",
       "type": "XML",

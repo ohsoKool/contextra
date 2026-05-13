@@ -1,10 +1,10 @@
 import cds from "@sap/cds";
 
-import { upload } from "../utils/uploadhandler.js";
+import { upload } from "./utils/uploadhandler.js";
 
-import { processPdfUpload } from "../ai/ingestion/processPdfUpload.js";
+import { processPdfUpload } from "./ai/ingestion/processPdfUpload.js";
 
-import log from "../utils/logger.js";
+import log from "./utils/logger.js";
 
 /*
   Extend CAP server using custom Express routes.

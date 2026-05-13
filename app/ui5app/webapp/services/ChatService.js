@@ -1,38 +1,42 @@
 sap.ui.define([], function () {
   "use strict";
 
-  /*
-    Service responsible for all AI chat API communication.
+  const SERVICE_URL = "/odata/v4/Assistant";
+  const ASK_URL = `${SERVICE_URL}/ask`;
 
-    Controllers should not directly call backend APIs.
-    This keeps UI logic and API logic separated.
-  */
+  async function getCsrfToken() {
+    const response = await fetch(SERVICE_URL, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "X-CSRF-Token": "Fetch",
+      },
+    });
 
-  const ASK_ENDPOINT = "/odata/v4/assistant/ask";
+    return response.headers.get("X-CSRF-Token");
+  }
 
   return {
-    askQuestion: async function (question) {
-      try {
-        const response = await fetch(ASK_ENDPOINT, {
-          method: "POST",
+    getCsrfToken,
 
-          headers: {
-            "Content-Type": "application/json",
-          },
+    async askQuestion(question) {
+      const token = await getCsrfToken();
 
-          body: JSON.stringify({
-            question,
-          }),
-        });
+      const response = await fetch(ASK_URL, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": token,
+        },
+        body: JSON.stringify({ question }),
+      });
 
-        if (!response.ok) {
-          throw new Error("Backend request failed");
-        }
-
-        return await response.json();
-      } catch (error) {
-        throw new Error(`Chat service failed: ${error.message}`);
+      if (!response.ok) {
+        throw new Error("Backend request failed");
       }
+
+      return response.json();
     },
   };
 });

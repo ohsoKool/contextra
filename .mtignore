@@ -1,0 +1,10 @@
+node_modules/
+app/ui5app/node_modules/
+mta_archives/
+gen/
+.contextra_mta_build_tmp/
+uploads/
+.DS_Store
+.env
+.git/
+dist/
