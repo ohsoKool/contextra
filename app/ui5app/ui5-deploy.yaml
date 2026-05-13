@@ -21,3 +21,5 @@ builder:
       configuration:
         archiveName: contextra-ui
         relativePaths: true
+        additionalFiles:
+          - xs-app.json
