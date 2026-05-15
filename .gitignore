@@ -20,3 +20,4 @@ mta_archives/
 .env
 
 uploads/
+app/ui5app/dist/

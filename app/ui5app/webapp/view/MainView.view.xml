@@ -1,5 +1,5 @@
 <mvc:View
-    controllerName="ui5app.controller.MainView"
+    controllerName="contextra.ui5app.controller.MainView"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:unified="sap.ui.unified"

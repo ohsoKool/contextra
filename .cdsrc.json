@@ -1,0 +1,16 @@
+{
+  "requires": {
+    "[development]": {
+      "auth": {
+        "kind": "mocked",
+
+        "users": {
+          "alice": {
+            "password": "alice",
+            "roles": ["User"]
+          }
+        }
+      }
+    }
+  }
+}

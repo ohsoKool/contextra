@@ -1,0 +1,7 @@
+node_modules/
+app/ui5app/node_modules/
+gen/
+dist/
+mta_archives/
+.contextra-ai-assistant_mta_build_tmp/
+.DS_Store

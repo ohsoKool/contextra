@@ -1,8 +1,8 @@
 import cds from "@sap/cds";
 
-import { askQuestion } from "../ai/orchestration/askQuestion.js";
+import { askQuestion } from "./ai/orchestration/askQuestion.js";
 
-import log from "../utils/logger.js";
+import log from "./utils/logger.js";
 
 /*
   CAP service implementation for AI assistant queries.

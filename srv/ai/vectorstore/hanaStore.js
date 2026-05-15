@@ -1,16 +1,40 @@
 import cds from "@sap/cds";
 
-await cds.connect.to("db");
+/*
+  Lazy database initialization.
 
-const db = await cds.connect.to("db");
+  WHY?
+  CAP internally manages HANA connection pooling.
+  We should avoid eager/double connections at module load time.
+*/
 
-console.log("Connected to SAP HANA Cloud");
+let db;
+
+/*
+  Reuse single CAP-managed DB connection.
+*/
+
+async function getDb() {
+  if (!db) {
+    db = await cds.connect.to("db");
+
+    console.log("Connected to SAP HANA Cloud");
+  }
+
+  return db;
+}
+
+/*
+  Store document chunk + embedding inside SAP HANA Vector Engine.
+*/
 
 export async function addDocument({ id, content, source, embedding }) {
   try {
+    const database = await getDb();
+
     const vectorString = `[${embedding.join(",")}]`;
 
-    await db.run(
+    await database.run(
       `
       INSERT INTO DOCUMENT_CHUNKS (
         ID,
@@ -31,27 +55,37 @@ export async function addDocument({ id, content, source, embedding }) {
     console.log(`Stored document chunk: ${id}`);
   } catch (error) {
     console.error("Failed to store document in HANA");
+
     console.error(error);
 
     throw error;
   }
 }
 
+/*
+  Perform semantic similarity search using cosine similarity.
+*/
+
 export async function similaritySearch({ embedding, limit = 5 }) {
   try {
+    const database = await getDb();
+
     const vectorString = `[${embedding.join(",")}]`;
 
-    const result = await db.run(
+    const result = await database.run(
       `
       SELECT TOP ${limit}
         ID,
         CONTENT,
         SOURCE,
+
         COSINE_SIMILARITY(
           EMBEDDING,
           TO_REAL_VECTOR(?)
         ) AS SCORE
+
       FROM DOCUMENT_CHUNKS
+
       ORDER BY SCORE DESC
       `,
       [vectorString],
@@ -61,22 +95,12 @@ export async function similaritySearch({ embedding, limit = 5 }) {
 
     return result;
   } catch (error) {
-    console.error("❌ Failed semantic similarity search");
+    console.error("Failed semantic similarity search");
+
     console.error(error);
 
     throw error;
   }
 }
 
-export default db;
-
-// CAP:
-// - resolves CF bindings
-// - injects credentials
-// - initializes HANA service
-// - internally uses hana-client
-// - executes SQL
-
-// IMPORTANT:
-// Standalone Node.js scripts must run using:
-// cds bind --exec -- node tests/test-hana.js
+export default getDb;

@@ -1,7 +1,7 @@
 {
   "_version": "1.60.0",
   "sap.app": {
-    "id": "ui5app",
+    "id": "contextra.ui5app",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -13,6 +13,18 @@
     "sourceTemplate": {
       "id": "@sap-ux/fiori-freestyle-writer:basic",
       "version": "0.21.10"
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "ui5app-display": {
+          "semanticObject": "ui5app",
+          "action": "display",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
     }
   },
   "sap.ui": {
@@ -48,7 +60,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "ui5app.i18n.i18n"
+          "bundleName": "contextra.ui5app.i18n.i18n"
         }
       }
     },
@@ -64,7 +76,7 @@
         "routerClass": "sap.m.routing.Router",
         "viewType": "XML",
         "async": true,
-        "viewPath": "ui5app.view",
+        "viewPath": "contextra.ui5app.view",
         "controlAggregation": "pages",
         "controlId": "app",
         "clearControlAggregation": false
@@ -87,10 +99,14 @@
       }
     },
     "rootView": {
-      "viewName": "ui5app.view.App",
+      "viewName": "contextra.ui5app.view.App",
       "type": "XML",
       "async": true,
       "id": "App"
     }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "contextra.service"
   }
 }

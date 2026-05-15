@@ -61,7 +61,7 @@ export async function askQuestion(question) {
     return {
       answer,
 
-      sources: retrieval.metadatas,
+      sources: JSON.stringify(retrieval.metadatas),
     };
   } catch (error) {
     log.error("RAG", "Question orchestration failed", error);

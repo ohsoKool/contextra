@@ -1,6 +1,11 @@
 namespace db;
 
-entity Test {
-    key ID : UUID;
-    name   : String(100);
+entity DocumentChunks {
+    key ID        : String(100);
+
+        CONTENT   : LargeString;
+
+        SOURCE    : String(255);
+
+        EMBEDDING : LargeBinary;
 }

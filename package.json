@@ -2,26 +2,25 @@
   "name": "contextra",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "cds bind --exec -- cds watch",
+    "start": "cds-serve"
+  },
   "dependencies": {
     "@cap-js/hana": "^2",
     "@cap-js/sqlite": "^2",
-    "@langchain/community": "^1.1.28",
-    "@langchain/core": "^1.1.45",
-    "@langchain/textsplitters": "^1.0.1",
+    "@langchain/community": "0.3.36",
+    "@langchain/textsplitters": "0.1.0",
     "@sap/cds": "^9",
     "@sap/hana-client": "^2.28.20",
     "@xenova/transformers": "^2.17.2",
     "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
+    "dotenv": "^16.4.5",
     "groq-sdk": "^1.1.2",
-    "langchain": "^1.4.0",
     "multer": "^2.1.1",
-    "pdf-parse": "^2.4.5",
-    "pdfjs-dist": "^5.6.205"
-  },
-  "type": "module",
-  "scripts": {
-    "start": "cds watch"
+    "pdf-parse": "^1.1.1",
+    "@sap/xssec": "^4"
   },
   "devDependencies": {
     "@sap/cds-dk": "^9"
@@ -30,6 +29,14 @@
     "requires": {
       "db": {
         "kind": "hana"
+      },
+      "destinations": true,
+      "html5-repo": true,
+      "workzone": true
+    },
+    "[production]": {
+      "requires": {
+        "auth": "xsuaa"
       }
     }
   }

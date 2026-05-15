@@ -1,15 +1,7 @@
 sap.ui.define([], function () {
   "use strict";
 
-  /*
-    Service responsible for all AI chat API communication.
-
-    Controllers should not directly call backend APIs.
-    This keeps UI logic and API logic separated.
-  */
-
   const ASK_ENDPOINT = "/odata/v4/assistant/ask";
-
   return {
     askQuestion: async function (question) {
       try {

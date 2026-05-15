@@ -1,0 +1,18 @@
+{
+  "xsappname": "contextra-ai-assistant",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.User",
+      "description": "Standard user access"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "User",
+      "description": "Standard application user",
+      "scope-references": ["$XSAPPNAME.User"]
+    }
+  ],
+  "attributes": []
+}

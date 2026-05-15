@@ -1,0 +1,14 @@
+specVersion: "3.1"
+
+metadata:
+  name: contextra.ui5app
+
+type: application
+
+builder:
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+
+      configuration:
+        archiveName: contextraui5app
