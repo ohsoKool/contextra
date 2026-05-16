@@ -1,8 +1,8 @@
 sap.ui.define([], function () {
   "use strict";
 
-  const SERVICE_URL = "/odata/v4/Assistant/";
-  const ASK_ENDPOINT = "/odata/v4/Assistant/ask";
+  const SERVICE_URL = "/odata/v4/assistant/";
+  const ASK_ENDPOINT = "/odata/v4/assistant/ask";
 
   async function getCsrfToken() {
     const response = await fetch(SERVICE_URL, {

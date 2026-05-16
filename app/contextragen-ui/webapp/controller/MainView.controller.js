@@ -63,8 +63,14 @@ sap.ui.define(
           oUploader.upload();
         },
 
-        onUploadComplete: function () {
-          MessageToast.show(this.getText("uploadSuccess"));
+        onUploadComplete: function (oEvent) {
+          const status = oEvent.getParameter("status");
+
+          if (status === 200) {
+            MessageToast.show(this.getText("uploadSuccess"));
+          } else {
+            MessageToast.show(`Upload failed with status ${status}`);
+          }
         },
       },
     );

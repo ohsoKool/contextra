@@ -36,7 +36,7 @@ export async function addDocument({ id, content, source, embedding }) {
 
     await database.run(
       `
-      INSERT INTO DOCUMENT_CHUNKS (
+      INSERT INTO DB_DOCUMENTCHUNKS (
         ID,
         CONTENT,
         SOURCE,
@@ -84,7 +84,7 @@ export async function similaritySearch({ embedding, limit = 5 }) {
           TO_REAL_VECTOR(?)
         ) AS SCORE
 
-      FROM DOCUMENT_CHUNKS
+      FROM DB_DOCUMENTCHUNKS
 
       ORDER BY SCORE DESC
       `,

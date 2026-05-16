@@ -7,5 +7,5 @@ entity DocumentChunks {
 
         SOURCE    : String(255);
 
-        EMBEDDING : LargeBinary;
+        EMBEDDING : Vector(384);
 }

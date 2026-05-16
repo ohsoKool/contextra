@@ -29,7 +29,7 @@
                         <unified:FileUploader
                             id="pdfUploader"
                             name="pdf"
-                            uploadUrl="/upload"
+                            uploadUrl="https://464a52datrial-dev-contextragen-srv.cfapps.us10-001.hana.ondemand.com/upload"
                             fileType="pdf"
                             uploadOnChange="false"
                             useMultipart="true"

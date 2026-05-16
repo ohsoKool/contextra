@@ -14,8 +14,24 @@ import log from "./utils/logger.js";
 */
 
 cds.on("bootstrap", (app) => {
+  // Allow custom upload requests
+  app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+
+    res.setHeader("Access-Control-Allow-Headers", "*");
+
+    next();
+  });
+
   app.post(
     "/upload",
+
+    // Disable CSRF requirement for custom upload route
+    (req, res, next) => {
+      req.csrfToken = () => "";
+
+      next();
+    },
 
     upload.single("pdf"),
 
