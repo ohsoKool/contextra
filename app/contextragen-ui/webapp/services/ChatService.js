@@ -1,7 +1,7 @@
 sap.ui.define([], function () {
   "use strict";
 
-  const ASK_ENDPOINT = "/odata/v4/assistant/ask";
+  const ASK_ENDPOINT = "/odata/v4/Assistant/ask";
   return {
     askQuestion: async function (question) {
       try {

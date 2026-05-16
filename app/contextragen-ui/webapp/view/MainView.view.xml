@@ -1,5 +1,5 @@
 <mvc:View
-    controllerName="contextra.ui5app.controller.MainView"
+    controllerName="contextragen.ui.controller.MainView"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:unified="sap.ui.unified"
@@ -29,7 +29,7 @@
                         <unified:FileUploader
                             id="pdfUploader"
                             name="pdf"
-                            uploadUrl="http://localhost:4004/upload"
+                            uploadUrl="/upload"
                             fileType="pdf"
                             uploadOnChange="true"
                             buttonText="{i18n>uploadButton}"

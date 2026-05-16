@@ -3,13 +3,13 @@
  */
 
 sap.ui.define(
-  ["sap/ui/core/UIComponent", "sap/ui/Device", "contextra/ui5app/model/models"],
+  ["sap/ui/core/UIComponent", "sap/ui/Device", "contextragen/ui/model/models"],
 
   function (UIComponent, Device, models) {
     "use strict";
 
     return UIComponent.extend(
-      "contextra.ui5app.Component",
+      "contextragen.ui.Component",
 
       {
         metadata: {

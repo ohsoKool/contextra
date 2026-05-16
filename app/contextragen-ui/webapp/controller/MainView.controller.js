@@ -2,14 +2,14 @@ sap.ui.define(
   [
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast",
-    "contextra/ui5app/services/ChatService",
+    "contextragen/ui/services/ChatService",
   ],
 
   function (Controller, MessageToast, ChatService) {
     "use strict";
 
     return Controller.extend(
-      "contextra.ui5app.controller.MainView",
+      "contextragen.ui.controller.MainView",
 
       {
         getText: function (key) {

@@ -5,7 +5,7 @@ sap.ui.define(
     "use strict";
 
     return Controller.extend(
-      "contextra.ui5app.controller.App",
+      "contextragen.ui.controller.App",
 
       {
         onInit: function () {},

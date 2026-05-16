@@ -1,10 +1,8 @@
 _schema-version: 3.3.0
 
-ID: contextra
-
+ID: contextragen
 version: 1.0.0
-
-description: "Contextra AI Assistant"
+description: "Contextragen AI Assistant"
 
 parameters:
   enable-parallel-deployments: true
@@ -18,7 +16,11 @@ build-parameters:
         - npx cds build --production
 
 modules:
-  - name: contextra-srv
+  # ============================================
+  # CAP SERVICE
+  # ============================================
+
+  - name: contextragen-srv
     type: nodejs
     path: gen/srv
 
@@ -29,7 +31,7 @@ modules:
     build-parameters:
       builder: npm-ci
       ignore:
-        - "node_modules/"
+        - node_modules/
 
     provides:
       - name: srv-api
@@ -37,11 +39,15 @@ modules:
           srv-url: ${default-url}
 
     requires:
-      - name: contextra-db
-      - name: contextra-auth
-      - name: contextra-destination
+      - name: contextragen-db
+      - name: contextragen-auth
+      - name: contextragen-destination
 
-  - name: contextra-db-deployer
+  # ============================================
+  # HANA DEPLOYER
+  # ============================================
+
+  - name: contextragen-db-deployer
     type: hdb
     path: gen/db
 
@@ -49,79 +55,74 @@ modules:
       buildpack: nodejs_buildpack
 
     requires:
-      - name: contextra-db
+      - name: contextragen-db
 
-  - name: contextra-app-deployer
-    type: com.sap.application.content
-    path: gen
+  # ============================================
+  # UI5 APPLICATION
+  # ============================================
 
-    build-parameters:
-      build-result: app/
-
-      requires:
-        - name: contextraui5app
-          artifacts:
-            - contextraui5app.zip
-          target-path: app/
-
-    requires:
-      - name: contextra-auth
-
-      - name: srv-api
-
-      - name: contextra-html5-repo-host
-        parameters:
-          content-target: true
-
-          config:
-            HTML5Runtime_enabled: true
+  - name: contextragen-ui
+    type: html5
+    path: app/contextragen-ui
 
     parameters:
-      config:
-        destinations:
-          - Name: srv-api
-            URL: ~{srv-api/srv-url}
-            Authentication: OAuth2UserTokenExchange
-            Type: HTTP
-            ProxyType: Internet
-            HTML5.ForwardAuthToken: true
-            HTML5.DynamicDestination: true
-
-  - name: contextraui5app
-    type: html5
-    path: app/ui5app
+      sap.cloud.service: contextragen
 
     build-parameters:
-      build-result: dist
-
       builder: custom
+      build-result: dist
 
       commands:
         - npm ci
-        - npm run build
-        - ui5 build preload --config ui5-deploy.yaml
+        - npm run build:cf
 
       supported-platforms: []
 
-  - name: contextra-destinations
+  # ============================================
+  # HTML5 APP CONTENT DEPLOYER
+  # ============================================
+
+  - name: contextragen-app-content
+    type: com.sap.application.content
+    path: .
+
+    requires:
+      - name: contextragen-html5-repo-host
+        parameters:
+          content-target: true
+
+    build-parameters:
+      build-result: resources
+
+      requires:
+        - name: contextragen-ui
+          artifacts:
+            - contextragen-ui.zip
+          target-path: resources/
+
+  # ============================================
+  # DESTINATION CONTENT
+  # ============================================
+
+  - name: contextragen-destination-content
     type: com.sap.application.content
 
     requires:
-      - name: contextra-auth
-        parameters:
-          service-key:
-            name: contextra-auth-key
-
-      - name: contextra-html5-repo-host
-        parameters:
-          service-key:
-            name: contextra-html5-repo-host-key
-
-      - name: srv-api
-
-      - name: contextra-destination
+      - name: contextragen-destination
         parameters:
           content-target: true
+
+      - name: contextragen-html5-repo-host
+        parameters:
+          service-key:
+            name: contextragen-html5-repo-host-key
+
+      - name: contextragen-auth
+        parameters:
+          service-key:
+            name: contextragen-auth-key
+
+      - name: srv-api
 
     build-parameters:
       no-source: true
@@ -132,35 +133,57 @@ modules:
           existing_destinations_policy: update
 
           destinations:
-            - Name: contextra-html5-repository
-              ServiceInstanceName: contextra-html5-repo-host
-              ServiceKeyName: contextra-html5-repo-host-key
-              sap.cloud.service: contextra.service
+            # HTML5 Repo Destination
 
-            - Name: contextra-auth
+            - Name: contextragen-html5-repo-host
+              ServiceInstanceName: contextragen-html5-repo-host
+              ServiceKeyName: contextragen-html5-repo-host-key
+              sap.cloud.service: contextragen
+
+            # XSUAA Destination
+
+            - Name: contextragen-auth
               Authentication: OAuth2UserTokenExchange
-              ServiceInstanceName: contextra-auth
-              ServiceKeyName: contextra-auth-key
-              sap.cloud.service: contextra.service
+              ServiceInstanceName: contextragen-auth
+              ServiceKeyName: contextragen-auth-key
+              sap.cloud.service: contextragen
+
+            # CAP Backend Destination
+
+            - Name: srv-api
+              URL: ~{srv-api/srv-url}
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: contextragen-auth
+              ServiceKeyName: contextragen-auth-key
+              HTML5.DynamicDestination: true
 
 resources:
-  - name: contextra-db
+  # ============================================
+  # HANA HDI CONTAINER
+  # ============================================
+
+  - name: contextragen-db
     type: com.sap.xs.hdi-container
 
     parameters:
       service: hana
       service-plan: hdi-shared
 
-  - name: contextra-auth
+  # ============================================
+  # XSUAA
+  # ============================================
+
+  - name: contextragen-auth
     type: org.cloudfoundry.managed-service
 
     parameters:
       service: xsuaa
       service-plan: application
+      service-name: contextragen-auth
       path: ./xs-security.json
 
       config:
-        xsappname: contextra-${org}-${space}
+        xsappname: contextragen-${org}-${space}
 
         tenant-mode: dedicated
 
@@ -169,19 +192,42 @@ resources:
             - binding-secret
             - x509
 
-  - name: contextra-destination
+  # ============================================
+  # DESTINATION SERVICE
+  # ============================================
+
+  - name: contextragen-destination
     type: org.cloudfoundry.managed-service
 
     parameters:
       service: destination
       service-plan: lite
+      service-name: contextragen-destination
 
-    requires:
-      - name: srv-api
+      config:
+        HTML5Runtime_enabled: true
 
-  - name: contextra-html5-repo-host
+        init_data:
+          instance:
+            existing_destinations_policy: update
+
+            destinations:
+              - Name: ui5
+                URL: https://ui5.sap.com
+                Type: HTTP
+                ProxyType: Internet
+                Authentication: NoAuthentication
+
+        version: 1.0.0
+
+  # ============================================
+  # HTML5 APPS REPOSITORY
+  # ============================================
+
+  - name: contextragen-html5-repo-host
     type: org.cloudfoundry.managed-service
 
     parameters:
       service: html5-apps-repo
       service-plan: app-host
+      service-name: contextragen-html5-repo-host

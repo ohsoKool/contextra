@@ -1,24 +1,43 @@
 {
   "_version": "1.60.0",
+
   "sap.app": {
-    "id": "contextra.ui5app",
+    "id": "contextragen.ui",
     "type": "application",
+
     "i18n": "i18n/i18n.properties",
+
     "applicationVersion": {
       "version": "0.0.1"
     },
+
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
+
     "resources": "resources.json",
+
     "sourceTemplate": {
       "id": "@sap-ux/fiori-freestyle-writer:basic",
       "version": "0.21.10"
     },
+
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/Assistant/",
+        "type": "OData",
+
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      }
+    },
+
     "crossNavigation": {
       "inbounds": {
         "ui5app-display": {
           "semanticObject": "ui5app",
           "action": "display",
+
           "signature": {
             "parameters": {},
             "additionalParameters": "allowed"
@@ -27,8 +46,10 @@
       }
     }
   },
+
   "sap.ui": {
     "technology": "UI5",
+
     "icons": {
       "icon": "",
       "favIcon": "",
@@ -37,33 +58,52 @@
       "tablet": "",
       "tablet@2": ""
     },
+
     "deviceTypes": {
       "desktop": true,
       "tablet": true,
       "phone": true
     }
   },
+
   "sap.ui5": {
     "flexEnabled": true,
+
     "dependencies": {
       "minUI5Version": "1.136.1",
+
       "libs": {
         "sap.m": {},
         "sap.ui.core": {}
       }
     },
+
     "contentDensities": {
       "compact": true,
       "cozy": true
     },
+
     "models": {
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
+
         "settings": {
-          "bundleName": "contextra.ui5app.i18n.i18n"
+          "bundleName": "contextragen.ui.i18n.i18n"
         }
       }
     },
+
     "resources": {
       "css": [
         {
@@ -71,16 +111,24 @@
         }
       ]
     },
+
     "routing": {
       "config": {
         "routerClass": "sap.m.routing.Router",
+
         "viewType": "XML",
+
         "async": true,
-        "viewPath": "contextra.ui5app.view",
+
+        "viewPath": "contextragen.ui.view",
+
         "controlAggregation": "pages",
+
         "controlId": "app",
+
         "clearControlAggregation": false
       },
+
       "routes": [
         {
           "name": "RouteMainView",
@@ -88,25 +136,32 @@
           "target": ["TargetMainView"]
         }
       ],
+
       "targets": {
         "TargetMainView": {
           "viewType": "XML",
+
           "transition": "slide",
+
           "clearControlAggregation": false,
+
           "viewId": "MainView",
+
           "viewName": "MainView"
         }
       }
     },
+
     "rootView": {
-      "viewName": "contextra.ui5app.view.App",
+      "viewName": "contextragen.ui.view.App",
       "type": "XML",
       "async": true,
       "id": "App"
     }
   },
+
   "sap.cloud": {
     "public": true,
-    "service": "contextra.service"
+    "service": "contextragen"
   }
 }
