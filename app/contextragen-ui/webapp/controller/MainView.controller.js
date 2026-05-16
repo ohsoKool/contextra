@@ -3,9 +3,10 @@ sap.ui.define(
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast",
     "contextragen/ui/services/ChatService",
+    "sap/ui/unified/FileUploaderParameter",
   ],
 
-  function (Controller, MessageToast, ChatService) {
+  function (Controller, MessageToast, ChatService, FileUploaderParameter) {
     "use strict";
 
     return Controller.extend(
@@ -37,7 +38,7 @@ sap.ui.define(
           try {
             const data = await ChatService.askQuestion(question);
 
-            oChatModel.setProperty("/response", data.answer);
+            oChatModel.setProperty("/response", data.value);
           } catch (error) {
             oChatModel.setProperty("/response", this.getText("backendError"));
 
@@ -45,6 +46,21 @@ sap.ui.define(
           } finally {
             oChatModel.setProperty("/loading", false);
           }
+        },
+
+        onUploadPress: function () {
+          const oUploader = this.byId("pdfUploader");
+
+          oUploader.removeAllHeaderParameters();
+
+          oUploader.addHeaderParameter(
+            new FileUploaderParameter({
+              name: "X-Requested-With",
+              value: "XMLHttpRequest",
+            }),
+          );
+
+          oUploader.upload();
         },
 
         onUploadComplete: function () {

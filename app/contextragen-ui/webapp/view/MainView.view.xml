@@ -31,9 +31,19 @@
                             name="pdf"
                             uploadUrl="/upload"
                             fileType="pdf"
-                            uploadOnChange="true"
+                            uploadOnChange="false"
+                            useMultipart="true"
+                            sendXHR="true"
+                            sameFilenameAllowed="true"
                             buttonText="{i18n>uploadButton}"
                             uploadComplete="onUploadComplete"
+                        />
+
+                        <Button
+                            text="Upload PDF"
+                            type="Emphasized"
+                            press="onUploadPress"
+                            class="sapUiTinyMarginTop"
                         />
 
                         <!-- Question Input -->
